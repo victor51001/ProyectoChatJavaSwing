@@ -14,6 +14,5 @@ public class MainHolaMundo {
         String cadena = JOptionPane.showInputDialog("Escribe algo");
         ventana.setVisible(true);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //aa
     }
 }
