@@ -19,12 +19,4 @@ public class HolaUsuario extends JFrame{
             }
         });
     }
-
-    public static void main(String[] args) {
-        HolaUsuario h = new HolaUsuario();
-        h.setSize(400,300);
-        h.setTitle("Ventana de saludos");
-        h.setVisible(true);
-        h.setDefaultCloseOperation(EXIT_ON_CLOSE);
-    }
 }
