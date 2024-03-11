@@ -18,13 +18,7 @@ public class Server {
     public int getPuerto() {
         return puerto;
     }
-    public void setPuerto(int puerto) {
-        this.puerto = puerto;
-    }
     public InetAddress getIp() {
         return ip;
-    }
-    public void setIp(InetAddress ip) {
-        this.ip = ip;
     }
 }
