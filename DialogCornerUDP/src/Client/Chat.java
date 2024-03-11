@@ -55,7 +55,7 @@ public class Chat {
     private void iniciarHiloMensajes() {
         HiloMensajes hiloMensajes = new HiloMensajes(socket, this);
         hiloM = hiloMensajes;
-        hiloMensajes.start();
+        hiloM.start();
     }
 
     public void enviarMensaje(String mensaje) {

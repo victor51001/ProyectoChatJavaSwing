@@ -15,9 +15,10 @@ public class HiloMensajes extends Thread {
     @Override
     public void run() {
         try {
-            String mensaje;
-            byte[] buffer = new byte[1024];
             while (true) {
+                String mensaje;
+                byte[] buffer = new byte[1024];
+                System.out.println("Esperando mensaje");
                 Thread.sleep(0);
                 DatagramPacket paquete = new DatagramPacket(buffer, buffer.length);
                 socket.receive(paquete);
@@ -25,7 +26,7 @@ public class HiloMensajes extends Thread {
                 if (mensaje.split(":")[0].equals("Usuarios conectados")) {
                     chat.actualizarUsuarios(mensaje);
                 } else {
-                    chat.añadirMensaje(mensaje.split(":")[1]);
+                    chat.añadirMensaje(mensaje);
                 }
             }
         } catch (IOException | InterruptedException e) {}

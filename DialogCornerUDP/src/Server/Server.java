@@ -6,8 +6,8 @@ import java.util.*;
 
 public class Server {
     private static final int PUERTO = 12345;
-    private static Map<InetAddress,Integer> clientes = new HashMap<InetAddress,Integer>();
-    private static Set<String> usuarios = new HashSet<String>();
+    private static HashSet<Integer> clientes = new HashSet<>();
+    private static HashSet<String> usuarios = new HashSet<>();
 
     public static void main(String[] args) {
         try {
@@ -23,23 +23,21 @@ public class Server {
                         byte[] bufferS = String.valueOf(libre).getBytes();
                         server.send(new DatagramPacket(bufferS, bufferS.length, paqueteE.getAddress(), paqueteE.getPort()));
                         if (libre) {
-                            clientes.put(paqueteE.getAddress(), paqueteE.getPort());
+                            clientes.add(paqueteE.getPort());
                             difundirUsuariosConectados(server);
                         }
                         break;
                     case "Salir":
-                        clientes.remove(paqueteE.getAddress());
+                        clientes.remove(paqueteE.getPort());
                         usuarios.remove(mensaje.split(":")[1]);
                         difundirUsuariosConectados(server);
                         break;
                     case "Mensaje":
-                        mensaje = mensaje.split(":")[1] + ": " + mensaje.split(":")[2];
-                        System.out.println(mensaje);
-                        for (Map.Entry<InetAddress,Integer> cliente : clientes.entrySet()) {
-                            InetAddress ip = cliente.getKey();
-                            int puerto = cliente.getValue();
-                            if ((!ip.equals(paqueteE.getAddress())) || puerto != paqueteE.getPort()) {
-                                server.send(new DatagramPacket(mensaje.getBytes(), mensaje.getBytes().length, ip, puerto));
+                        String mensaje2 = mensaje.split(":")[1].concat(": "+ mensaje.split(":")[2]);
+                        for(int puerto : clientes) {
+                            InetAddress ip = InetAddress.getByName("localhost");
+                            if (puerto != paqueteE.getPort()) {
+                                server.send(new DatagramPacket(mensaje2.getBytes(), mensaje2.getBytes().length, ip, puerto));
                             }
                         }
                         break;
@@ -50,16 +48,16 @@ public class Server {
         }
     }
 
-    public static void difundirUsuariosConectados(DatagramSocket server) {
-        StringBuilder listaUsuarios = new StringBuilder("Usuarios conectados: ");
+    public static void difundirUsuariosConectados(DatagramSocket server) throws UnknownHostException {
+        StringBuilder listaUsuarios = new StringBuilder("Usuarios conectados:");
         for (String usuario : usuarios) {
             listaUsuarios.append(usuario).append(", ");
         }
         listaUsuarios.setLength(listaUsuarios.length() - 2);
-        byte[] buffer = listaUsuarios.toString().getBytes();
-        for (Map.Entry<InetAddress,Integer> cliente : clientes.entrySet()) {
-            InetAddress ip = cliente.getKey();
-            int puerto = cliente.getValue();
+        String usuariosConectados = listaUsuarios.toString();
+        byte[] buffer = usuariosConectados.getBytes();
+        for (Integer puerto : clientes) {
+            InetAddress ip = InetAddress.getByName("localhost");
             DatagramPacket paquete = new DatagramPacket(buffer, buffer.length, ip, puerto);
             try {
                 server.send(paquete);
@@ -69,4 +67,3 @@ public class Server {
         }
     }
 }
-
